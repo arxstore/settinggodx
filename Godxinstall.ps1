@@ -1,9 +1,8 @@
-$BatFilePath = "$env:TEMP\Setting GodX.bat"
+$tempBat = Join-Path $env:TEMP "Setting GodX.bat"
 
-$GithubUrl = "https://raw.githubusercontent.com/arxstore/settinggodx/refs/heads/main/Setting%20GodX.bat"
+Invoke-WebRequest `    -Url "https://raw.githubusercontent.com/arxstore/settinggodx/refs/heads/main/Setting%20GodX.bat"`
+-OutFile $tempBat
 
-Invoke-WebRequest -Uri $GithubUrl -OutFile $BatFilePath
+Start-Process $tempBat -Wait
 
-& "$BatFilePath"
-
-Remove-Item -Path $BatFilePath -Force
+Remove-Item $tempBat -Force -ErrorAction SilentlyContinue
